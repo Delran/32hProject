@@ -83,49 +83,31 @@ int main()
             solGestion.supprimerDroite();
         }
 
-        unsigned typeDecoration;
-        unsigned nbRepetitions = 0;
-        unsigned espacement;
-
         while ((window.getView().getCenter().x - (window.getView().getSize().x / 2)) - 600 < plusAGauche)
         {
-            espacement = (rand() % 200) + 100;
-
-            if (espacement > 150)
-            {
-                espacement = 1000;
-            }
-
-            int coteGauche = plusAGauche - (int)espacement;
+            unsigned espacement = (rand() % 300) + 150;
+            int coteGauche = plusAGauche - espacement;
             plusAGauche = (*(decorations.insert(decorations.begin(), new Arbre(sf::Vector2f(coteGauche, -50.0f)))))->getPosition().x;
         }
 
-        /*nbRepetitions = 0;
-
-        while ((window.getView().getCenter().x + (window.getView().getSize().x / 2)) > (decorations.back()->getPosition().x + decorations.back()->getLocalBounds().width))
+        while ((window.getView().getCenter().x + (window.getView().getSize().x / 2)) + 600 > plusADroite)
         {
-            if (nbRepetitions == 0)
-            {
-                typeDecoration = rand() % 100;
-            }
+            unsigned espacement = (rand() % 300) + 150;
+            int coteDroit = plusADroite + espacement;
+            decorations.push_back(new Arbre(sf::Vector2f(coteDroit, -50.0f)));
+            plusADroite = decorations.back()->getPosition().x;
+        }
 
-            if (typeDecoration < 90)
-            {
-                int positionGauche = decorations.back()->getPosition().x + (rand() % 200) + 200;
-                decorations.push_back(new Arbre(sf::Vector2f(positionGauche, -50.0f)));
-                nbRepetitions = (rand() % 15) + 5;
-            }
-        }*/
-
-        while ((window.getView().getCenter().x - (window.getView().getSize().x / 2)) > plusAGauche + 900)
+        while ((window.getView().getCenter().x - (window.getView().getSize().x / 2)) - 1200 > plusAGauche)
         {
             plusAGauche = (*(decorations.erase(decorations.begin())))->getPosition().x;
         }
 
-        /*while ((window.getView().getCenter().x + (window.getView().getSize().x / 2)) < (decorations.back()->getPosition().x + decorations.back()->getLocalBounds().width))
+        while ((window.getView().getCenter().x + (window.getView().getSize().x / 2)) + 1200 < plusADroite)
         {
             decorations.pop_back();
-        }*/
+            plusADroite = decorations.back()->getPosition().x;
+        }
 
         window.clear(sf::Color(173, 216, 230));
 
