@@ -91,7 +91,12 @@ int main()
         {
             espacement = (rand() % 200) + 100;
 
-            int coteGauche = plusAGauche - espacement;
+            if (espacement > 150)
+            {
+                espacement = 1000;
+            }
+
+            int coteGauche = plusAGauche - (int)espacement;
             plusAGauche = (*(decorations.insert(decorations.begin(), new Arbre(sf::Vector2f(coteGauche, -50.0f)))))->getPosition().x;
         }
 
