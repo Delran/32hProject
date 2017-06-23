@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -std=c++14
-LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lgdi32 -lopengl32 -ljpeg -lfreetype -lFLAC -lvorbis -lvorbisfile -lvorbisenc -logg -lwinmm
+LDFLAGS = -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system 
 EXEC = foret
 
 SRC=$(wildcard *.cpp)
