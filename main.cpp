@@ -1,5 +1,5 @@
 #include "Arbre.hpp"
-#include "SolGestion.hpp"
+#include "StaticGestion.hpp"
 
 #include <iostream>
 
@@ -7,6 +7,9 @@ int main()
 {
     Arbre::getAtlas();
     Sol::getAtlas();
+    Herbe::getAtlas();
+    Midground::getAtlas();
+    Background::getAtlas();
 
     srand(time(NULL));
 
@@ -16,7 +19,7 @@ int main()
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(true);
 
-    SolGestion solGestion (sf::Vector2f(0.0f, 750.0f));
+    StaticGestion staticGestion (sf::Vector2f(0.0f, 750.0f));
     std::vector<sf::Sprite*> decorations;
     decorations.push_back(new Arbre (sf::Vector2f(5.0f, -50.0f)));
 
@@ -52,47 +55,67 @@ int main()
 
         if (keys[sf::Keyboard::D])
         {
-            sf::View nouvelleVue = window.getView();
-            nouvelleVue.move(5, 0);
-            window.setView(nouvelleVue);
+            for (unsigned taille = 0; taille < staticGestion.backgrounds.size(); taille++)
+            {
+                staticGestion.backgrounds[taille].move(3, 0);
+            }
+            for (unsigned taille = 0; taille < staticGestion.midgrounds.size(); taille++)
+            {
+                staticGestion.midgrounds[taille].move(4, 0);
+            }
+
+            for (unsigned taille = 0; taille < decorations.size(); taille++)
+            {
+                decorations[taille]->move(5, 0);
+            }
+
+            for (unsigned taille = 0; taille < staticGestion.sols.size(); taille++)
+            {
+                staticGestion.sols[taille].move(5, 0);
+            }
+            for (unsigned taille = 0; taille < staticGestion.herbes.size(); taille++)
+            {
+                staticGestion.herbes[taille].move(5, 0);
+            }
         }
         if (keys[sf::Keyboard::Q])
         {
-            sf::View nouvelleVue = window.getView();
-            nouvelleVue.move(-5, 0);
-            window.setView(nouvelleVue);
+            for (unsigned taille = 0; taille < staticGestion.backgrounds.size(); taille++)
+            {
+                staticGestion.backgrounds[taille].move(-3, 0);
+            }
+            for (unsigned taille = 0; taille < staticGestion.midgrounds.size(); taille++)
+            {
+                staticGestion.midgrounds[taille].move(-4, 0);
+            }
+
+            for (unsigned taille = 0; taille < decorations.size(); taille++)
+            {
+                decorations[taille]->move(-5, 0);
+            }
+
+            for (unsigned taille = 0; taille < staticGestion.sols.size(); taille++)
+            {
+                staticGestion.sols[taille].move(-5, 0);
+            }
+            for (unsigned taille = 0; taille < staticGestion.herbes.size(); taille++)
+            {
+                staticGestion.herbes[taille].move(-5, 0);
+            }
         }
 
-        while ((window.getView().getCenter().x - (window.getView().getSize().x / 2) - 400) < solGestion.sols[0].position.x)
-        {
-            solGestion.ajouterGauche();
-        }
-
-        while ((window.getView().getCenter().x + (window.getView().getSize().x / 2) + 200) > (solGestion.sols.back().position.x + solGestion.sols.back().getLocalBounds().width))
-        {
-            solGestion.ajouterDroite();
-        }
-
-        while ((window.getView().getCenter().x - (window.getView().getSize().x / 2)) > solGestion.sols[0].position.x + 400)
-        {
-            solGestion.supprimerGauche();
-        }
-
-        while ((window.getView().getCenter().x + (window.getView().getSize().x / 2)) < (solGestion.sols.back().position.x + solGestion.sols.back().getLocalBounds().width - 200))
-        {
-            solGestion.supprimerDroite();
-        }
+        staticGestion.update(window.getSize().x);
 
         while ((window.getView().getCenter().x - (window.getView().getSize().x / 2)) - 600 < plusAGauche)
         {
-            unsigned espacement = (rand() % 300) + 150;
+            unsigned espacement = (rand() % 300) + 100;
             int coteGauche = plusAGauche - espacement;
             plusAGauche = (*(decorations.insert(decorations.begin(), new Arbre(sf::Vector2f(coteGauche, -50.0f)))))->getPosition().x;
         }
 
         while ((window.getView().getCenter().x + (window.getView().getSize().x / 2)) + 600 > plusADroite)
         {
-            unsigned espacement = (rand() % 300) + 150;
+            unsigned espacement = (rand() % 300) + 100;
             int coteDroit = plusADroite + espacement;
             decorations.push_back(new Arbre(sf::Vector2f(coteDroit, -50.0f)));
             plusADroite = decorations.back()->getPosition().x;
@@ -109,16 +132,29 @@ int main()
             plusADroite = decorations.back()->getPosition().x;
         }
 
-        window.clear(sf::Color(173, 216, 230));
+        window.clear(sf::Color(153, 196, 210));
+
+        for (unsigned taille = 0; taille < staticGestion.backgrounds.size(); taille++)
+        {
+            window.draw(staticGestion.backgrounds[taille]);
+        }
+        for (unsigned taille = 0; taille < staticGestion.midgrounds.size(); taille++)
+        {
+            window.draw(staticGestion.midgrounds[taille]);
+        }
 
         for (unsigned taille = 0; taille < decorations.size(); taille++)
         {
             window.draw(*(decorations[taille]));
         }
 
-        for (unsigned taille = 0; taille < solGestion.sols.size(); taille++)
+        for (unsigned taille = 0; taille < staticGestion.sols.size(); taille++)
         {
-            window.draw(solGestion.sols[taille]);
+            window.draw(staticGestion.sols[taille]);
+        }
+        for (unsigned taille = 0; taille < staticGestion.herbes.size(); taille++)
+        {
+            window.draw(staticGestion.herbes[taille]);
         }
 
         window.display();

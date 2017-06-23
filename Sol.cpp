@@ -8,13 +8,13 @@ void Sol::getAtlas()
 }
 
 Sol::Sol (sf::Vector2f initialPosition)
-    :sf::Sprite(), position (initialPosition)
+    :sf::Sprite()
 {
     setTexture(sols);
 
     unsigned idSol = rand() % 4;
 
-    setTextureRect(sf::IntRect(160 * idSol, 0, 160, 33));
+    setTextureRect(sf::IntRect(SOL_WIDTH * idSol, 0, SOL_WIDTH, SOL_HEIGHT));
 
     setPosition(initialPosition);
 
