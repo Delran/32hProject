@@ -1,5 +1,6 @@
 #include "StaticGestion.hpp"
 #include "DynamicGestion.hpp"
+#include "Deer.hpp"
 
 #include <SFML/Audio.hpp>
 #include <iostream>
@@ -20,11 +21,12 @@ int main()
     Herbe::getAtlas();
     Midground::getAtlas();
     Background::getAtlas();
+    Deer::getAtlas();
 
     srand(time(NULL));
 
     sf::RenderWindow window(sf::VideoMode::getFullscreenModes()[0], "Forest", sf::Style::Fullscreen);
-    //sf::RenderWindow window(sf::VideoMode(800, 600), "Forest");
+    //sf::RenderWindow window(sf::VideoMode(1920, 1080), "Forest");
 
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(true);
@@ -34,6 +36,10 @@ int main()
 
     sf::Texture framebuffer;
     framebuffer.create(window.getSize().x, window.getSize().y);
+
+    std::vector<Deer> deers;
+
+    int compteur = 0;
 
     sf::Shader shader;
 
@@ -75,8 +81,40 @@ int main()
     bool versGauche = false;
     bool versDroite = false;
 
+    bool allaitGauche = false;
+    bool allaitDroite = false;
+
+    bool spaceLock = false;
+
+    bool facing = false;
+
     while (window.isOpen())
     {
+        //std::cout << compteur << '\n';
+        if (compteur > 350)
+        {
+            compteur = 0;
+            unsigned int percent = rand()%100;
+            if (percent > 56)
+            {
+                int x;
+                if (versGauche)
+                {
+                    x = -150;
+                }
+                else
+                {
+                    x = window.getView().getSize().x + 150;
+                }
+                deers.push_back(Deer(sf::Vector2f(x, 668)));
+
+                if (facing)
+                    deers.back().scale(-1, 1);
+                facing = !facing;
+            }
+        }
+
+
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -85,17 +123,41 @@ int main()
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
             {
                 versGauche = true;
+                allaitGauche = true;
+                allaitDroite = false;
                 versDroite = false;
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
             {
                 versGauche = false;
+                allaitGauche = false;
+                allaitDroite = true;
                 versDroite = true;
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !spaceLock)
+            {
+                spaceLock = true;
+
+                if (versGauche || versDroite)
+                {
+                    versGauche = false;
+                    versDroite = false;
+                }
+                else
+                {
+                    versGauche = allaitGauche;
+                    versDroite = allaitDroite;
+                }
+            }
+            else
+            {
+                spaceLock = false;
             }
         }
 
         if (versGauche)
         {
+            compteur++;
             for (unsigned taille = 0; taille < staticGestion.backgrounds.size(); taille++)
             {
                 staticGestion.backgrounds[taille].move(1, 0);
@@ -109,7 +171,14 @@ int main()
             {
                 dynamicGestion.elements[taille]->move(3.5, 0);
             }
+            for (unsigned taille = 0; taille < deers.size(); taille++)
+            {
+                deers[taille].move(3.5, 0);
+                deers[taille].delUpdateLeft();
+                if (deers[taille].toDelete())
+                    deers.erase(deers.begin()+taille);
 
+            }
             for (unsigned taille = 0; taille < staticGestion.sols.size(); taille++)
             {
                 staticGestion.sols[taille].move(3.5, 0);
@@ -121,6 +190,7 @@ int main()
         }
         else if (versDroite)
         {
+            compteur++;
             for (unsigned taille = 0; taille < staticGestion.backgrounds.size(); taille++)
             {
                 staticGestion.backgrounds[taille].move(-1, 0);
@@ -134,7 +204,13 @@ int main()
             {
                 dynamicGestion.elements[taille]->move(-3.5, 0);
             }
-
+            for (unsigned taille = 0; taille < deers.size(); taille++)
+            {
+                deers[taille].move(-3.5, 0);
+                deers[taille].delUpdateRight(window.getView().getSize().x);
+                if (deers[taille].toDelete())
+                    deers.erase(deers.begin()+taille);
+            }
             for (unsigned taille = 0; taille < staticGestion.sols.size(); taille++)
             {
                 staticGestion.sols[taille].move(-3.5, 0);
@@ -163,7 +239,11 @@ int main()
         {
             window.draw(*(dynamicGestion.elements[taille]));
         }
-
+        for (unsigned taille = 0; taille < deers.size(); taille++)
+        {
+            deers[taille].animate();
+            window.draw(deers[taille]);
+        }
         for (unsigned taille = 0; taille < staticGestion.sols.size(); taille++)
         {
             window.draw(staticGestion.sols[taille]);
