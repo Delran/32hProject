@@ -62,7 +62,8 @@ int main()
     shader.loadFromMemory(vertexShader, sf::Shader::Vertex);
     shader.loadFromMemory(fragmentShader, sf::Shader::Fragment);
 
-    bool keys[1024];
+    bool versGauche = false;
+    bool versDroite = false;
 
     while (window.isOpen())
     {
@@ -73,70 +74,64 @@ int main()
                 window.close();
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
             {
-                keys[sf::Keyboard::Q] = true;
-            }
-            else
-            {
-                keys[sf::Keyboard::Q] = false;
+                versGauche = true;
+                versDroite = false;
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
             {
-                keys[sf::Keyboard::D] = true;
-            }
-            else
-            {
-                keys[sf::Keyboard::D] = false;
+                versGauche = false;
+                versDroite = true;
             }
         }
 
-        if (keys[sf::Keyboard::D])
+        if (versGauche)
         {
             for (unsigned taille = 0; taille < staticGestion.backgrounds.size(); taille++)
             {
-                staticGestion.backgrounds[taille].move(3, 0);
+                staticGestion.backgrounds[taille].move(1, 0);
             }
             for (unsigned taille = 0; taille < staticGestion.midgrounds.size(); taille++)
             {
-                staticGestion.midgrounds[taille].move(4, 0);
+                staticGestion.midgrounds[taille].move(2.5, 0);
             }
 
             for (unsigned taille = 0; taille < dynamicGestion.elements.size(); taille++)
             {
-                dynamicGestion.elements[taille]->move(5, 0);
+                dynamicGestion.elements[taille]->move(3.5, 0);
             }
 
             for (unsigned taille = 0; taille < staticGestion.sols.size(); taille++)
             {
-                staticGestion.sols[taille].move(5, 0);
+                staticGestion.sols[taille].move(3.5, 0);
             }
             for (unsigned taille = 0; taille < staticGestion.herbes.size(); taille++)
             {
-                staticGestion.herbes[taille].move(5, 0);
+                staticGestion.herbes[taille].move(3.5, 0);
             }
         }
-        if (keys[sf::Keyboard::Q])
+        else if (versDroite)
         {
             for (unsigned taille = 0; taille < staticGestion.backgrounds.size(); taille++)
             {
-                staticGestion.backgrounds[taille].move(-3, 0);
+                staticGestion.backgrounds[taille].move(-1, 0);
             }
             for (unsigned taille = 0; taille < staticGestion.midgrounds.size(); taille++)
             {
-                staticGestion.midgrounds[taille].move(-4, 0);
+                staticGestion.midgrounds[taille].move(-2.5, 0);
             }
 
             for (unsigned taille = 0; taille < dynamicGestion.elements.size(); taille++)
             {
-                dynamicGestion.elements[taille]->move(-5, 0);
+                dynamicGestion.elements[taille]->move(-3.5, 0);
             }
 
             for (unsigned taille = 0; taille < staticGestion.sols.size(); taille++)
             {
-                staticGestion.sols[taille].move(-5, 0);
+                staticGestion.sols[taille].move(-3.5, 0);
             }
             for (unsigned taille = 0; taille < staticGestion.herbes.size(); taille++)
             {
-                staticGestion.herbes[taille].move(-5, 0);
+                staticGestion.herbes[taille].move(-3.5, 0);
             }
         }
 
