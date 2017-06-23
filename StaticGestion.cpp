@@ -1,7 +1,5 @@
 #include "StaticGestion.hpp"
 
-#include <iostream>
-
 StaticGestion::StaticGestion (sf::Vector2f initialPosition)
 {
     sols.push_back(Sol (initialPosition));
