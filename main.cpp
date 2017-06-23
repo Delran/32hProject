@@ -1,10 +1,20 @@
 #include "StaticGestion.hpp"
 #include "DynamicGestion.hpp"
 
+#include <SFML/Audio.hpp>
 #include <iostream>
 
 int main()
 {
+    sf::Music music;
+    if (!music.openFromFile("music.wav"))
+    {
+      std::cout << "Fail loading music" << '\n';
+    }
+    music.play();
+    music.setVolume(60);
+    music.setLoop(true);
+
     Arbre::getAtlas();
     Sol::getAtlas();
     Herbe::getAtlas();
