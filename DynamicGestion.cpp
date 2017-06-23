@@ -33,15 +33,39 @@ void DynamicGestion::update(int screenWidth)
 void DynamicGestion::ajouterGauche()
 {
     sf::Vector2f nouvellePosition = elements.front()->getPosition();
-    nouvellePosition.x -= (rand() % 400 + 200);
-    elements.insert(elements.begin(), new Arbre (nouvellePosition));
+
+    int choix = rand() % 100;
+    if (choix < 30)
+    {
+        nouvellePosition.x -= (rand() % 200 + 200);
+        sf::Sprite * newSprite = new sf::Sprite();
+        newSprite->setPosition(nouvellePosition);
+        elements.insert(elements.begin(), newSprite);
+    }
+    else
+    {
+        nouvellePosition.x -= (rand() % 200 + 200);
+        elements.insert(elements.begin(), new Arbre (nouvellePosition));
+    }
 }
 
 void DynamicGestion::ajouterDroite()
 {
     sf::Vector2f nouvellePosition = elements.back()->getPosition();
-    nouvellePosition.x += (rand() % 400 + 200);
-    elements.push_back(new Arbre (nouvellePosition));
+
+    int choix = rand() % 100;
+    if (choix < 30)
+    {
+        nouvellePosition.x += (rand() % 200 + 200);
+        sf::Sprite * newSprite = new sf::Sprite();
+        newSprite->setPosition(nouvellePosition);
+        elements.push_back(newSprite);
+    }
+    else
+    {
+        nouvellePosition.x += (rand() % 200 + 200);
+        elements.push_back(new Arbre (nouvellePosition));
+    }
 }
 
 void DynamicGestion::supprimerGauche()
