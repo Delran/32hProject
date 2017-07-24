@@ -8,7 +8,7 @@
 int main()
 {
     sf::Music music;
-    if (!music.openFromFile("music.wav"))
+    if (!music.openFromFile("music.ogg"))
     {
       std::cout << "Fail loading music" << '\n';
     }
@@ -25,7 +25,7 @@ int main()
 
     srand(time(NULL));
 
-    sf::RenderWindow window(sf::VideoMode::getFullscreenModes()[0], "Forest", sf::Style::Fullscreen);
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Forest", sf::Style::Fullscreen);
     //sf::RenderWindow window(sf::VideoMode(1920, 1080), "Forest");
 
     window.setFramerateLimit(60);
