@@ -8,12 +8,13 @@
 int main()
 {
     sf::Music music;
-    if (!music.openFromFile("music.ogg"))
+    std::string musicPath = "music.ogg";
+    if (!music.openFromFile(musicPath))
     {
-      std::cout << "Fail loading music" << '\n';
+        std::cout << "Fail loading music : " << musicPath << "." << std::endl;
     }
     music.play();
-    music.setVolume(60);
+    music.setVolume(50);
     music.setLoop(true);
 
     Arbre::getAtlas();
@@ -25,17 +26,20 @@ int main()
 
     srand(time(NULL));
 
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Forest", sf::Style::Fullscreen);
-    //sf::RenderWindow window(sf::VideoMode(1920, 1080), "Forest");
+    sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
+    sf::RenderWindow window(sf::VideoMode(videoMode.width, videoMode.height), "Forest", sf::Style::Fullscreen);
 
-    window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(true);
 
     StaticGestion staticGestion (sf::Vector2f(0.0f, 750.0f));
     DynamicGestion dynamicGestion (sf::Vector2f(0.0f, 0.0f));
 
-    sf::Texture framebuffer;
-    framebuffer.create(window.getSize().x, window.getSize().y);
+    sf::Texture frameTexture;
+    frameTexture.create(videoMode.width, videoMode.height);
+
+    sf::Sprite reflectionSprite;
+    reflectionSprite.scale(1, -0.48);
+    reflectionSprite.setPosition(0, videoMode.height);
 
     std::vector<Deer> deers;
 
@@ -48,7 +52,6 @@ int main()
     "{" \
       "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;" \
       "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;" \
-      "gl_FrontColor = gl_Color;" \
     "}";
 
     const std::string fragmentShader = \
@@ -60,21 +63,18 @@ int main()
         "vec2 offy = vec2(0.0, 0.003);"\
 
         "vec4 pixel = texture2D(texture, gl_TexCoord[0].xy)               * 4.0 +"\
-                     "texture2D(texture, gl_TexCoord[0].xy - offx)        * 2.0 +"\
-                     "texture2D(texture, gl_TexCoord[0].xy + offx)        * 2.0 +"\
-                     "texture2D(texture, gl_TexCoord[0].xy - offy)        * 2.0 +"\
-                     "texture2D(texture, gl_TexCoord[0].xy + offy)        * 2.0 +"\
-                     "texture2D(texture, gl_TexCoord[0].xy - offx - offy) * 1.0 +"\
-                     "texture2D(texture, gl_TexCoord[0].xy - offx + offy) * 1.0 +"\
-                     "texture2D(texture, gl_TexCoord[0].xy + offx - offy) * 1.0 +"\
-                     "texture2D(texture, gl_TexCoord[0].xy + offx + offy) * 1.0;"\
+                    "texture2D(texture, gl_TexCoord[0].xy - offx)        * 2.0 +"\
+                    "texture2D(texture, gl_TexCoord[0].xy + offx)        * 2.0 +"\
+                    "texture2D(texture, gl_TexCoord[0].xy - offy)        * 2.0 +"\
+                    "texture2D(texture, gl_TexCoord[0].xy + offy)        * 2.0 +"\
+                    "texture2D(texture, gl_TexCoord[0].xy - offx - offy) * 1.0 +"\
+                    "texture2D(texture, gl_TexCoord[0].xy - offx + offy) * 1.0 +"\
+                    "texture2D(texture, gl_TexCoord[0].xy + offx - offy) * 1.0 +"\
+                    "texture2D(texture, gl_TexCoord[0].xy + offx + offy) * 1.0;"\
+        "vec4 color = pixel / 16.0;"\
 
-        "float blue = pixel.r * 0.0 + pixel.g * 0.41 + pixel.b * 0.58;"\
-        //"gl_FragColor =  gl_Color * (pixel / 16.0);"
-        "vec4 color = gl_Color * (pixel / 16.0);"\
-        "gl_FragColor = vec4(color.r*0.70, color.g*0.8, color.b * 1.0, 1.0);"
-
-     "}";
+        "gl_FragColor = vec4(color.r*0.6, color.g*0.8, color.b * 1.0, 1.0);"\
+    "}";
     shader.loadFromMemory(vertexShader, sf::Shader::Vertex);
     shader.loadFromMemory(fragmentShader, sf::Shader::Fragment);
 
@@ -253,17 +253,12 @@ int main()
             window.draw(staticGestion.herbes[taille]);
         }
 
-        framebuffer.update(window);
-        //std::cout << framebuffer.getSize().x << framebuffer.getSize().y << '\n';
+        frameTexture.update(window);
 
-        sf::Sprite bufferSprite;
-        bufferSprite.setTexture(framebuffer);
-        bufferSprite.setTextureRect(sf::IntRect(0, 48, window.getView().getSize().x, window.getView().getSize().y-300));
+        reflectionSprite.setTexture(frameTexture);
+        reflectionSprite.setTextureRect(sf::IntRect(0, videoMode.height * 0.25, videoMode.width, videoMode.height * 0.5));
 
-        bufferSprite.setPosition(sf::Vector2f((window.getView().getCenter().x - (window.getView().getSize().x / 2)), window.getView().getSize().y+128));
-        bufferSprite.scale(1, -0.5);
-        shader.setParameter("texture", sf::Shader::CurrentTexture);
-        window.draw(bufferSprite, &shader);
+        window.draw(reflectionSprite, &shader);
 
         window.display();
     }
